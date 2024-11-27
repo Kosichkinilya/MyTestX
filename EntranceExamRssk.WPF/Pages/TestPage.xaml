@@ -1,0 +1,218 @@
+﻿<Page
+    x:Class="EntranceExamRssk.WPF.Pages.TestPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:EntranceExamRssk.Common.Helpers;assembly=EntranceExamRssk.Common"
+    xmlns:local="clr-namespace:EntranceExamRssk.WPF.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="TestPage"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Background="#f0f0f0"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
+    mc:Ignorable="d">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer>
+            <Grid x:Name="testArea">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="0" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="0" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Border
+                    Padding="15,10"
+                    Background="White"
+                    BorderBrush="{DynamicResource DefaultBorder}"
+                    BorderThickness="2"
+                    CornerRadius="4">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="Тест по дисциплине:" />
+                            <TextBlock
+                                MinWidth="150"
+                                Margin="15,0"
+                                HorizontalAlignment="Left"
+                                Text="{Binding Subject}" />
+                            <TextBlock />
+                            <TextBlock
+                                MinWidth="150"
+                                Margin="15,0"
+                                Text="{Binding Name}"
+                                TextWrapping="Wrap" />
+                        </DockPanel>
+                        <TextBlock
+                            MinWidth="150"
+                            Text="{Binding Description}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+
+                <ItemsControl
+                    Name="questionsListView"
+                    Grid.Row="6"
+                    HorizontalContentAlignment="Stretch"
+                    AlternationCount="{Binding Questions.Count}"
+                    BorderThickness="0"
+                    ItemsSource="{Binding Questions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,10"
+                                Padding="15,10"
+                                Background="White"
+                                BorderBrush="{DynamicResource DefaultBorder}"
+                                BorderThickness="1"
+                                CornerRadius="4">
+                                <Grid>
+                                    <StackPanel>
+
+                                        <TextBlock Name="number" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Path=(ItemsControl.AlternationIndex), StringFormat='Вопрос №{0}'}" />
+
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="10" />
+                                                <ColumnDefinition Width="auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <RichTextBox
+                                                helpers:RichTextBoxHelper.DocumentXaml="{Binding Task}"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                FocusVisualStyle="{x:Null}"
+                                                IsHitTestVisible="False"
+                                                IsReadOnly="True" />
+                                        </Grid>
+
+                                        <StackPanel
+                                            Margin="0,5"
+                                            Orientation="Horizontal"
+                                            Visibility="Collapsed">
+                                            <TextBlock VerticalAlignment="Center" Text="Тип вопроса:" />
+                                            <ComboBox
+                                                Name="cmbAnswerType"
+                                                MinWidth="250"
+                                                Margin="10,0"
+                                                SelectedIndex="{Binding Type}">
+                                                <ComboBoxItem>Один правильный ответ</ComboBoxItem>
+                                                <ComboBoxItem>Несколько правильных ответов</ComboBoxItem>
+                                            </ComboBox>
+                                        </StackPanel>
+
+
+
+
+                                        <ItemsControl Name="answers" ItemsSource="{Binding Answers}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <DataTemplate.Resources>
+                                                        <ControlTemplate x:Key="OneRigthAnswerTemplate">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="auto" />
+                                                                    <ColumnDefinition />
+                                                                    <ColumnDefinition Width="auto" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <RadioButton
+                                                                    VerticalAlignment="Center"
+                                                                    GroupName="{Binding Text, ElementName=number}"
+                                                                    IsChecked="{Binding IsRight, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                                                                <RichTextBox
+                                                                    Grid.Column="1"
+                                                                    Margin="10,0"
+                                                                    helpers:RichTextBoxHelper.DocumentXaml="{Binding Content}"
+                                                                    BorderThickness="0"
+                                                                    IsHitTestVisible="False"
+                                                                    IsReadOnly="True" />
+
+                                                            </Grid>
+                                                        </ControlTemplate>
+                                                        <ControlTemplate x:Key="ManyRigthAnswerTemplate">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="auto" />
+                                                                    <ColumnDefinition />
+                                                                    <ColumnDefinition Width="auto" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsRight, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                                                                <RichTextBox
+                                                                    Grid.Column="1"
+                                                                    Margin="10,0"
+                                                                    helpers:RichTextBoxHelper.DocumentXaml="{Binding Content}"
+                                                                    BorderThickness="0"
+                                                                    IsHitTestVisible="False"
+                                                                    IsReadOnly="True" />
+
+                                                            </Grid>
+                                                        </ControlTemplate>
+                                                    </DataTemplate.Resources>
+                                                    <Control Margin="0,10,0,0">
+                                                        <Control.Style>
+                                                            <Style TargetType="Control">
+                                                                <Style.Resources />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding SelectedItem.Content, ElementName=cmbAnswerType}" Value="Один правильный ответ">
+                                                                        <Setter Property="Template" Value="{StaticResource OneRigthAnswerTemplate}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding SelectedItem.Content, ElementName=cmbAnswerType}" Value="Несколько правильных ответов">
+                                                                        <Setter Property="Template" Value="{StaticResource ManyRigthAnswerTemplate}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Control.Style>
+                                                    </Control>
+
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+
+        <Grid Grid.Row="1" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Width="{Binding ActualWidth, ElementName=saveButton}"
+                Padding="30,3"
+                Click="Cancel_ButtonClick"
+                HorizontalAlignment="Left"
+                Content="Отмена" />
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="{Binding Duration, StringFormat='Осталось времени: {0}'}" />
+            </StackPanel>
+            <Button
+                Name="saveButton"
+                Grid.Column="2"
+                Padding="30,3"
+                HorizontalAlignment="Right"
+                Click="Save_ButtonClick"
+                Content="Сохранить" />
+        </Grid>
+    </Grid>
+</Page>
